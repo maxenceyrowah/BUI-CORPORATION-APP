@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
@@ -29,6 +23,7 @@ import { Task } from '@core/models';
 import { DeleteTaskComponent } from './delete-task/delete-task.component';
 import { STATUS } from '@shared/constants/task';
 import { NewTaskComponent } from './new-task/new-task.component';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-tasks',
@@ -49,7 +44,6 @@ import { NewTaskComponent } from './new-task/new-task.component';
   ],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TasksComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
@@ -60,6 +54,7 @@ export class TasksComponent implements OnInit {
   displayedColumns: string[] = ['task_name', 'statut', 'actions'];
   tasks: Task[] = [];
   isSubmitting = signal(false);
+  isLoading = signal(false);
   options = STATUS;
 
   ngOnInit() {
@@ -67,9 +62,13 @@ export class TasksComponent implements OnInit {
   }
 
   getTasks() {
-    this.taskService.getTasks().subscribe((tasks) => {
-      this.tasks = tasks;
-    });
+    this.isLoading.set(true);
+    this.taskService
+      .getTasks()
+      .pipe(finalize(() => this.isLoading.set(false)))
+      .subscribe((tasks) => {
+        this.tasks = tasks;
+      });
   }
   openAddTask() {
     this.dialog.open(NewTaskComponent, { disableClose: true, width: '20rem' });

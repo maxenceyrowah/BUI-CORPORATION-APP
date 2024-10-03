@@ -30,12 +30,12 @@
             @for (task of tasks; track task?._id) {
             <tr class="bg-white transition-all duration-500 hover:bg-gray-50">
               <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                <input *ngIf="task.isEditing" [(ngModel)]="task.task_name" class="border p-2 uniform-input" />
+                <input *ngIf="task.isEditing" [(ngModel)]="task.task_name" class="border p-2 uniform-input w-full" />
                 <span *ngIf="!task.isEditing">{{ task.task_name }}</span>
               </td>
 
               <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
-                <select *ngIf="task.isEditing" [(ngModel)]="task.statut" class="border p-2 uniform-input">
+                <select *ngIf="task.isEditing" [(ngModel)]="task.statut" class="border p-2 uniform-input w-full">
                   <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
                 </select>
                 <span *ngIf="!task.isEditing">{{ task?.statut }}</span>
