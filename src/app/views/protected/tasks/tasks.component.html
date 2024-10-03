@@ -1,1 +1,82 @@
-<p>tasks works!</p>
+<div class="flex flex-col p-20">
+  <div class=" overflow-x-auto">
+    <div class="min-w-full inline-block align-middle">
+
+      <div class="flex flex-row justify-between">
+        <div>
+          <p class="text-2xl">Liste des tâches</p>
+        </div>
+        <div class="mb-5 text-end flex gap-3">
+          <button mat-flat-button class="rounded-[8px]" (click)="openAddTask()">Ajouter une tâche</button>
+          <button mat-raised-button class="rounded-[8px]" (click)="logout()">Se déconnecter</button>
+        </div>
+      </div>
+
+      <div class="overflow-hidden ">
+        <table class="min-w-full rounded-xl">
+          <thead>
+            <tr class="bg-gray-50">
+              @for (item of displayedColumns; track item) {
+              <th scope="col" [ngClass]="{ 'text-right': item === 'actions'}"
+                class="p-5 text-left text-sm leading-6 font-semibold text-gray-900 capitalize rounded-t-xl">
+                {{ displayHeader(item) | uppercase }}
+              </th>
+              }
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-gray-300">
+            @if(tasks.length) {
+            @for (task of tasks; track task?._id) {
+            <tr class="bg-white transition-all duration-500 hover:bg-gray-50">
+              <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                <input *ngIf="task.isEditing" [(ngModel)]="task.task_name" class="border p-2 uniform-input" />
+                <span *ngIf="!task.isEditing">{{ task.task_name }}</span>
+              </td>
+
+              <td class="p-5 whitespace-nowrap text-sm leading-6 font-medium text-gray-900">
+                <select *ngIf="task.isEditing" [(ngModel)]="task.statut" class="border p-2 uniform-input">
+                  <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
+                </select>
+                <span *ngIf="!task.isEditing">{{ task?.statut }}</span>
+              </td>
+
+              <td class="p-5 text-right">
+                @if(!task.isEditing) {
+                <button mat-icon-button matTooltip="Editer" (click)="editField(task)" class="text-blue-500">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button matTooltip="Supprimer" (click)="deleteTask(task)" class="text-blue-500">
+                  <mat-icon>delete</mat-icon>
+                </button>
+                }
+
+                @if(task.isEditing) {
+                <button mat-icon-button matTooltip="Enregistrer" (click)="saveField(task)" class="text-green-500"
+                  [disabled]="isSubmitting()">
+                  <mat-icon *ngIf="!isSubmitting()">save</mat-icon>
+                  <mat-progress-spinner *ngIf="isSubmitting()" [diameter]="24"
+                    [mode]="'indeterminate'"></mat-progress-spinner>
+                </button>
+                <button mat-icon-button matTooltip="Annuler" (click)="cancelEditField(task)" [disabled]="isSubmitting()"
+                  class="text-red-500">
+                  <mat-icon>close</mat-icon>
+                </button>
+                }
+              </td>
+            </tr>
+            }
+            } @else {
+            <tr>
+              <td colspan="3" class="p-5 text-center text-gray-500 text-sm">
+                Aucune tâche disponible.
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</div>

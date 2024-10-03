@@ -17,10 +17,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Auth } from '@angular/fire/auth';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { FormFieldComponent } from '@shared/form-field-component';
+import { FormFieldComponent } from '@shared/components/form-field-component';
 import { NgIf } from '@angular/common';
 import { AuthGateway } from '@core/ports';
 import { CONNECTED_USER_KEY } from '@shared/constants/auth';
@@ -45,13 +44,12 @@ import { CONNECTED_USER_KEY } from '@shared/constants/auth';
 export class RegisterComponent implements OnInit {
   private readonly authService = inject(AuthGateway);
   private readonly fb = inject(FormBuilder);
-  private readonly fbAuth = inject(Auth);
   private readonly router = inject(Router);
   private readonly _snackBar = inject(MatSnackBar);
 
   registerForm: FormGroup;
   firstIndex = 0;
-  isSubmitting = signal(false);
+  isSubmitting = signal(true);
   hide = signal(true);
 
   ngOnInit() {
@@ -77,7 +75,7 @@ export class RegisterComponent implements OnInit {
         email: dataForm.email as string,
         password: dataForm.password as string,
       };
-      const data = await this.authService.register(payload, this.fbAuth);
+      const data = await this.authService.register(payload);
 
       if (data) {
         const { user } = data;

@@ -19,11 +19,10 @@ import {
 } from '@angular/forms';
 import { NgIf } from '@angular/common';
 
-import { FormFieldComponent } from '@shared/form-field-component';
+import { FormFieldComponent } from '@shared/components/form-field-component';
 import { AuthGateway } from '@core/ports';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ACCESS_TOKEN_KEY } from '@shared/constants/auth';
-import { Auth } from '@angular/fire/auth';
+import { ACCESS_TOKEN_KEY, CONNECTED_USER_KEY } from '@shared/constants/auth';
 
 @Component({
   selector: 'app-login',
@@ -47,9 +46,9 @@ export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly _snackBar = inject(MatSnackBar);
-  private readonly fbAuth = inject(Auth);
 
   loginForm: FormGroup;
+  firstIndex = 0;
   hide = signal(true);
   isSubmitting = signal(false);
 
@@ -71,13 +70,16 @@ export class LoginComponent implements OnInit {
         email: dataForm.email as string,
         password: dataForm.password as string,
       };
-      const data = await this.authService.login(payload, this.fbAuth);
+      const data = await this.authService.login(payload);
 
       if (data) {
         const { user } = data;
         this.isSubmitting.set(false);
-        this.setItemToLocalStorage(user?.accessToken);
-        this._snackBar.open('Connexion réussie avec succès.');
+        this.setItemToLocalStorage(
+          user?.accessToken,
+          user?.providerData?.[this.firstIndex]
+        );
+        this._snackBar.open('Connexion réussie avec succès.', 'fermer');
         this.router.navigate(['/app/gestions-taches']);
       }
     } catch (error) {
@@ -91,8 +93,9 @@ export class LoginComponent implements OnInit {
     event.stopPropagation();
   }
 
-  private setItemToLocalStorage(user: any) {
-    localStorage.setItem(ACCESS_TOKEN_KEY, JSON.stringify(user));
+  private setItemToLocalStorage(token: any, user: any) {
+    localStorage.setItem(CONNECTED_USER_KEY, JSON.stringify(user));
+    localStorage.setItem(ACCESS_TOKEN_KEY, token);
   }
   private initLoginForm() {
     this.loginForm = this.fb.group({

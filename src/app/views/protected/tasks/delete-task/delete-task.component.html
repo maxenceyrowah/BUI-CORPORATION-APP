@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Supprimer la tâche</h2>
+<mat-dialog-content class="rounded-none">
+  <div>
+    <p class="md:text-[20px] text-md">
+      Vous êtes sur le point de supprimer la tâche ?
+    </p>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-flat-button class="rounded-md" (click)="onCancel()" [disabled]="isSubmitting()">Non</button>
+  <button type="submit" (click)="onSubmit()" class="rounded-md" mat-raised-button [disabled]="isSubmitting()">
+    <span *ngIf="!isSubmitting()">
+      Oui
+    </span>
+    <mat-progress-spinner *ngIf="isSubmitting()" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
+  </button></mat-dialog-actions>

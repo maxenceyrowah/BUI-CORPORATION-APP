@@ -1,1 +1,30 @@
-<p>new-task works!</p>
+<h2 mat-dialog-title>Ajouter une tâche</h2>
+<mat-dialog-content class="rounded-none">
+  <app-form-field label="Nom de la tâche" fieldRequired>
+    <div ngProjectAs="[field-content]">
+      <mat-form-field appearance="outline" class="w-full">
+        <input matInput placeholder="nom de la tâche" [formControl]="task_name">
+      </mat-form-field>
+    </div>
+  </app-form-field>
+
+  <app-form-field label="Statut">
+    <div ngProjectAs="[field-content]">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-select [formControl]="statut">
+          @for (statut of STATUS; track statut.value) {
+          <mat-option [value]="statut.value">{{statut.label | uppercase}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </app-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-flat-button class="rounded-md" (click)="onCancel()" [disabled]="isSubmitting()">Annuler</button>
+  <button type="submit" (click)="onSubmit()" class="rounded-md" mat-raised-button [disabled]="isSubmitting()">
+    <span *ngIf="!isSubmitting()">
+      Enregistrer
+    </span>
+    <mat-progress-spinner *ngIf="isSubmitting()" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
+  </button></mat-dialog-actions>

@@ -1,21 +1,25 @@
 import {
+  Auth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from '@angular/fire/auth';
 
 import { AuthGateway } from '@core/ports';
-import { Auth } from '@core/models';
+import { Auth as AuthModel } from '@core/models';
 import { ACCESS_TOKEN_KEY } from '@shared/constants/auth';
+import { inject } from '@angular/core';
 
 export class FirebaseAuthGateway extends AuthGateway {
-  login(credentials: Auth, fbAuth: any) {
+  private readonly fbAuth = inject(Auth);
+
+  login(credentials: AuthModel) {
     const { email, password } = credentials;
-    return signInWithEmailAndPassword(fbAuth, email, password);
+    return signInWithEmailAndPassword(this.fbAuth, email, password);
   }
 
-  register(credentials: Auth, fbAuth: any) {
+  register(credentials: AuthModel) {
     const { email, password } = credentials;
-    return createUserWithEmailAndPassword(fbAuth, email, password);
+    return createUserWithEmailAndPassword(this.fbAuth, email, password);
   }
 
   get isLoggedIn(): boolean {
