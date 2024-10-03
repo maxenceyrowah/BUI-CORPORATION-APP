@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "./dist/todo-app-ui",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
