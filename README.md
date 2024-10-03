@@ -14,7 +14,7 @@
 
 ## Installation
 
-Pour installer et configurer le projet RICVA, suivez ces étapes :
+Pour installer et configurer le projet TODO-APP-UI, suivez ces étapes :
 
 ### Prérequis
 
@@ -53,7 +53,7 @@ Pour installer et configurer le projet RICVA, suivez ces étapes :
 
 ### Commandes utiles
 
-- Construction pour la production : `npm run build:prod` ou `yarn build:prod`
+- Construction pour la production : `npm run build` ou `yarn build`
 - Exécution des tests unitaires : `npm run test` ou `yarn test`
 
 ## Structure du Projet
