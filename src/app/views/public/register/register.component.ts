@@ -1,14 +1,29 @@
-import { Component, signal } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Auth } from '@angular/fire/auth';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FormFieldComponent } from '@shared/form-field-component';
 import { NgIf } from '@angular/common';
+import { AuthGateway } from '@core/ports';
+import { CONNECTED_USER_KEY } from '@shared/constants/auth';
 
 @Component({
   selector: 'app-register',
@@ -21,18 +36,72 @@ import { NgIf } from '@angular/common';
     MatIconModule,
     FormFieldComponent,
     MatProgressSpinnerModule,
+    ReactiveFormsModule,
     NgIf,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss',
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
+  private readonly authService = inject(AuthGateway);
+  private readonly fb = inject(FormBuilder);
+  private readonly fbAuth = inject(Auth);
+  private readonly router = inject(Router);
+  private readonly _snackBar = inject(MatSnackBar);
+
   registerForm: FormGroup;
+  firstIndex = 0;
   isSubmitting = signal(false);
   hide = signal(true);
+
+  ngOnInit() {
+    this.initRegisterForm();
+  }
 
   clickEvent(event: MouseEvent) {
     this.hide.set(!this.hide());
     event.stopPropagation();
+  }
+
+  async submit() {
+    const dataForm = this.registerForm.value;
+
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    try {
+      const payload = {
+        email: dataForm.email as string,
+        password: dataForm.password as string,
+      };
+      const data = await this.authService.register(payload, this.fbAuth);
+
+      if (data) {
+        const { user } = data;
+        this.isSubmitting.set(false);
+        this.setItemToLocalStorage(user?.providerData?.[this.firstIndex]);
+        this._snackBar.open(
+          'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.'
+        );
+        this.router.navigate(['/public/login']);
+      }
+    } catch (error) {
+      console.log('🚀 ~ RegisterComponent ~ submit ~ error:', error);
+      this.isSubmitting.set(false);
+    }
+  }
+
+  private setItemToLocalStorage(user: any) {
+    localStorage.setItem(CONNECTED_USER_KEY, JSON.stringify(user));
+  }
+
+  private initRegisterForm() {
+    this.registerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]],
+    });
   }
 }

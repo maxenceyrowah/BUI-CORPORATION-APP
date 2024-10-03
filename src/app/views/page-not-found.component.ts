@@ -14,7 +14,7 @@ import { Component } from '@angular/core';
           <a
             href="/"
             class="mt-4 inline-block
-                        rounded bg-orange-500 text-white px-4 py-2 font-semibold hover:bg-orange-300 hover:text-white"
+                        rounded bg-blue-500 text-white px-4 py-2 font-semibold hover:bg-blue-300 hover:text-white"
           >
             Retourner à l'accueil
           </a>
