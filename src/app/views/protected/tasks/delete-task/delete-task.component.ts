@@ -12,9 +12,10 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TaskGateway } from '@core/ports';
+import { ErrorsService } from '@shared/services/errors.service';
+import { ToasterService } from '@shared/services/toaster.server';
 
 @Component({
   selector: 'app-delete-task',
@@ -25,7 +26,9 @@ import { TaskGateway } from '@core/ports';
 })
 export class DeleteTaskComponent {
   private dialogRef = inject(MatDialogRef<DeleteTaskComponent>);
-  private readonly _snackBar = inject(MatSnackBar);
+  private readonly _snackBar = inject(ToasterService);
+  private readonly errorService = inject(ErrorsService);
+
   private readonly taskService = inject(TaskGateway);
   public entryData = inject(MAT_DIALOG_DATA);
 
@@ -36,11 +39,12 @@ export class DeleteTaskComponent {
     try {
       if (this.entryData?.documentID) {
         await this.taskService.deleteTask(this.entryData?.documentID);
-        this._snackBar.open('Tâche supprimée avec succès', 'Fermer');
+        this._snackBar.show('Tâche supprimée avec succès');
         this.isSubmitting.set(false);
         this.onCancel();
       }
     } catch (error) {
+      this.errorService.handleError(error);
       this.isSubmitting.set(false);
     }
   }

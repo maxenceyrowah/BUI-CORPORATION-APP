@@ -12,10 +12,20 @@ import {
   NgIf,
   UpperCasePipe,
 } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { FormFieldComponent } from '@shared/components/form-field-component';
+import {
+  combineLatest,
+  finalize,
+  Observable,
+  of,
+  startWith,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 
 import { ACCESS_TOKEN_KEY, CONNECTED_USER_KEY } from '@shared/constants/auth';
 import { TaskGateway } from '@core/ports';
@@ -23,7 +33,9 @@ import { Task } from '@core/models';
 import { DeleteTaskComponent } from './delete-task/delete-task.component';
 import { STATUS } from '@shared/constants/task';
 import { NewTaskComponent } from './new-task/new-task.component';
-import { finalize } from 'rxjs';
+import { DestroyService } from '@shared/services/destroy.service';
+import { ToasterService } from '@shared/services/toaster.server';
+import { ErrorsService } from '@shared/services/errors.service';
 
 @Component({
   selector: 'app-tasks',
@@ -41,6 +53,9 @@ import { finalize } from 'rxjs';
     MatTooltipModule,
     MatProgressSpinnerModule,
     AsyncPipe,
+    MatSelectModule,
+    ReactiveFormsModule,
+    FormFieldComponent,
   ],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss',
@@ -49,26 +64,50 @@ export class TasksComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
   private readonly taskService = inject(TaskGateway);
-  private readonly _snackBar = inject(MatSnackBar);
+  private readonly destroy$ = inject(DestroyService);
+  private readonly _snackBar = inject(ToasterService);
+  private readonly errorService = inject(ErrorsService);
 
   displayedColumns: string[] = ['task_name', 'statut', 'actions'];
-  tasks: Task[] = [];
+  filteredTasks = ['Tous', 'completed', 'uncompleted'];
   isSubmitting = signal(false);
   isLoading = signal(false);
+  taskStatutSelected = new FormControl('Tous');
   options = STATUS;
+  filteredTasks$: Observable<Task[]>;
+  allTasks: Task[] = [];
 
   ngOnInit() {
-    this.getTasks();
+    this.setupTaskFiltering();
   }
 
+  setupTaskFiltering() {
+    const tasks$ = this.getTasks();
+    const statusFilter$ = this.taskStatutSelected.valueChanges.pipe(
+      startWith('Tous')
+    );
+
+    this.filteredTasks$ = combineLatest([tasks$, statusFilter$]).pipe(
+      takeUntil(this.destroy$),
+      switchMap(([tasks, status]) => {
+        if (status === 'Tous') {
+          return of(tasks);
+        } else {
+          return of(tasks.filter((task) => task.statut === status));
+        }
+      })
+    );
+  }
   getTasks() {
     this.isLoading.set(true);
-    this.taskService
-      .getTasks()
-      .pipe(finalize(() => this.isLoading.set(false)))
-      .subscribe((tasks) => {
-        this.tasks = tasks;
-      });
+    return this.taskService.getTasks().pipe(
+      takeUntil(this.destroy$),
+      finalize(() => this.isLoading.set(false)),
+      switchMap((tasks) => {
+        this.allTasks = tasks;
+        return of(tasks);
+      })
+    );
   }
   openAddTask() {
     this.dialog.open(NewTaskComponent, { disableClose: true, width: '20rem' });
@@ -83,12 +122,12 @@ export class TasksComponent implements OnInit {
         const { _id, ...rest } = row;
         rest['isEditing'] = false;
         await this.taskService.putTask(rest, _id);
-        this._snackBar.open('La tâche a été mise à jour avec succès', 'fermer');
+        this._snackBar.show('La tâche a été mise à jour avec succès');
       }
       row.isEditing = false;
       this.isSubmitting.set(false);
     } catch (error) {
-      console.log('🚀 ~ TasksComponent ~ saveField ~ error:', error);
+      this.errorService.handleError(error);
       this.isSubmitting.set(false);
     }
   }
@@ -116,5 +155,13 @@ export class TasksComponent implements OnInit {
   displayHeader(row: any) {
     if (row === 'task_name') return 'Libelle de la tâche';
     return row;
+  }
+
+  get uncompletedTasksNumber() {
+    const umcompleteTasks = this.allTasks.filter(
+      (task) => task.statut !== 'completed'
+    ).length;
+
+    return `${umcompleteTasks} tâches`;
   }
 }

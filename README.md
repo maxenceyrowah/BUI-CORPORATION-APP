@@ -9,6 +9,7 @@
     - [Étapes d'installation](#étapes-dinstallation)
     - [Commandes utiles](#commandes-utiles)
   - [Structure du Projet](#structure-du-projet)
+    - [Technologies](#technologies)
   - [Fonctionnalités](#fonctionnalités)
   - [Licence](#licence)
 
@@ -70,6 +71,15 @@ Pour installer et configurer le projet TODO-APP-UI, suivez ces étapes :
 - `src/assets/` : Ressources statiques (images, vidéos, etc.)
 - `src/index.html` : Page d'accueil de l'application
 - `src/styles.css` : Styles globaux
+
+### Technologies
+
+- Semantic HTML5 markup
+- Flexbox
+- Mobile-first workflow
+- - TailwindCSS
+- [Angular](https://angular.dev/)
+- [Firebase](https://firebase.google.com/)
 
 ## Fonctionnalités
 

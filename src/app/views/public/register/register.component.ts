@@ -17,12 +17,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { FormFieldComponent } from '@shared/components/form-field-component';
 import { NgIf } from '@angular/common';
 import { AuthGateway } from '@core/ports';
 import { CONNECTED_USER_KEY } from '@shared/constants/auth';
+import { ToasterService } from '@shared/services/toaster.server';
+import { ErrorsService } from '@shared/services/errors.service';
 
 @Component({
   selector: 'app-register',
@@ -45,11 +46,12 @@ export class RegisterComponent implements OnInit {
   private readonly authService = inject(AuthGateway);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
-  private readonly _snackBar = inject(MatSnackBar);
+  private readonly _snackBar = inject(ToasterService);
+  private readonly errorService = inject(ErrorsService);
 
   registerForm: FormGroup;
   firstIndex = 0;
-  isSubmitting = signal(true);
+  isSubmitting = signal(false);
   hide = signal(true);
 
   ngOnInit() {
@@ -81,13 +83,13 @@ export class RegisterComponent implements OnInit {
         const { user } = data;
         this.isSubmitting.set(false);
         this.setItemToLocalStorage(user?.providerData?.[this.firstIndex]);
-        this._snackBar.open(
+        this._snackBar.show(
           'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.'
         );
         this.router.navigate(['/public/login']);
       }
     } catch (error) {
-      console.log('🚀 ~ RegisterComponent ~ submit ~ error:', error);
+      this.errorService.handleError(error);
       this.isSubmitting.set(false);
     }
   }

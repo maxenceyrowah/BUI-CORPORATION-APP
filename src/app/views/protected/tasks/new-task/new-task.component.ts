@@ -21,11 +21,12 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TaskGateway } from '@core/ports';
 import { FormFieldComponent } from '@shared/components/form-field-component';
 import { STATUS } from '@shared/constants/task';
+import { ErrorsService } from '@shared/services/errors.service';
+import { ToasterService } from '@shared/services/toaster.server';
 
 @Component({
   selector: 'app-new-task',
@@ -50,7 +51,8 @@ export class NewTaskComponent {
   private readonly taskService = inject(TaskGateway);
   private dialogRef = inject(MatDialogRef<NewTaskComponent>);
   public entryData = inject(MAT_DIALOG_DATA);
-  private readonly _snackBar = inject(MatSnackBar);
+  private readonly _snackBar = inject(ToasterService);
+  private readonly errorService = inject(ErrorsService);
 
   status = STATUS;
   isSubmitting = signal(false);
@@ -58,11 +60,11 @@ export class NewTaskComponent {
   firstIndex = 0;
 
   task_name = new FormControl('');
-  statut = new FormControl('not_complete');
+  statut = new FormControl('uncompleted');
 
   async onSubmit() {
     if (!this.task_name.value) {
-      this._snackBar.open('Veuillez saisir le nom de la tâche', 'fermer');
+      this._snackBar.show('Veuillez saisir le nom de la tâche');
       return;
     }
 
@@ -72,9 +74,7 @@ export class NewTaskComponent {
         task_name: this.task_name.value as string,
         statut: this.statut.value as string,
         isEditing: false,
-        _id: '',
       };
-
       const createdTask = await this.taskService.postTask(payload);
 
       if (createdTask) {
@@ -83,6 +83,7 @@ export class NewTaskComponent {
       this.isSubmitting.set(false);
       this.onCancel();
     } catch (error) {
+      this.errorService.handleError(error);
       this.isSubmitting.set(false);
     }
   }

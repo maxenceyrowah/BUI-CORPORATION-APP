@@ -21,8 +21,9 @@ import { NgIf } from '@angular/common';
 
 import { FormFieldComponent } from '@shared/components/form-field-component';
 import { AuthGateway } from '@core/ports';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ACCESS_TOKEN_KEY, CONNECTED_USER_KEY } from '@shared/constants/auth';
+import { ErrorsService } from '@shared/services/errors.service';
+import { ToasterService } from '@shared/services/toaster.server';
 
 @Component({
   selector: 'app-login',
@@ -45,7 +46,8 @@ export class LoginComponent implements OnInit {
   private readonly authService = inject(AuthGateway);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
-  private readonly _snackBar = inject(MatSnackBar);
+  private readonly _snackBar = inject(ToasterService);
+  private readonly errorService = inject(ErrorsService);
 
   loginForm: FormGroup;
   firstIndex = 0;
@@ -79,11 +81,11 @@ export class LoginComponent implements OnInit {
           user?.accessToken,
           user?.providerData?.[this.firstIndex]
         );
-        this._snackBar.open('Connexion réussie avec succès.', 'fermer');
+        this._snackBar.show('Connexion réussie avec succès.');
         this.router.navigate(['/app/gestions-taches']);
       }
     } catch (error) {
-      console.log('🚀 ~ LoginComponent ~ submit ~ error:', error);
+      this.errorService.handleError(error);
       this.isSubmitting.set(false);
     }
   }

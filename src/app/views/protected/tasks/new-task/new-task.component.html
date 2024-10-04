@@ -12,8 +12,8 @@
     <div ngProjectAs="[field-content]">
       <mat-form-field appearance="outline" class="w-full">
         <mat-select [formControl]="statut">
-          @for (status of status; track statut.value) {
-          <mat-option [value]="statut.value">{{status.label | uppercase}}</mat-option>
+          @for (statut of status; track statut.value) {
+          <mat-option [value]="statut.value">{{statut.label | uppercase}}</mat-option>
           }
         </mat-select>
       </mat-form-field>
