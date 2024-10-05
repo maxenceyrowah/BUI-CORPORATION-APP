@@ -1,5 +1,6 @@
-import { Task } from '@core/models';
 import { Observable } from 'rxjs';
+
+import { Task } from '@core/models';
 
 export abstract class TaskGateway {
   abstract getTasks(): Observable<Task[]>;

@@ -5,12 +5,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -24,7 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TaskGateway } from '@core/ports';
 import { FormFieldComponent } from '@shared/components/form-field-component';
-import { STATUS } from '@shared/constants/task';
+import { STATUS, TASK_STATUT } from '@shared/constants/task';
 import { ErrorsService } from '@shared/services/errors.service';
 import { ToasterService } from '@shared/services/toaster.server';
 
@@ -37,7 +32,6 @@ import { ToasterService } from '@shared/services/toaster.server';
     NgIf,
     FormFieldComponent,
     MatFormField,
-    FormsModule,
     MatSelectModule,
     MatInputModule,
     ReactiveFormsModule,
@@ -49,18 +43,15 @@ import { ToasterService } from '@shared/services/toaster.server';
 })
 export class NewTaskComponent {
   private readonly taskService = inject(TaskGateway);
-  private dialogRef = inject(MatDialogRef<NewTaskComponent>);
-  public entryData = inject(MAT_DIALOG_DATA);
   private readonly _snackBar = inject(ToasterService);
   private readonly errorService = inject(ErrorsService);
+  private dialogRef = inject(MatDialogRef<NewTaskComponent>);
+  public entryData = inject(MAT_DIALOG_DATA);
 
   status = STATUS;
   isSubmitting = signal(false);
-  addTask: FormGroup;
-  firstIndex = 0;
-
   task_name = new FormControl('');
-  statut = new FormControl('uncompleted');
+  statut = new FormControl(TASK_STATUT.NON_TERMINE);
 
   async onSubmit() {
     if (!this.task_name.value) {

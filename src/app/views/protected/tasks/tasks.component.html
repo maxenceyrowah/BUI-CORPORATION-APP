@@ -19,7 +19,7 @@
             <mat-form-field appearance="outline">
               <mat-select [formControl]="taskStatutSelected">
                 @for (taskFiltered of filteredTasks; track taskFiltered) {
-                <mat-option [value]="taskFiltered">{{taskFiltered}}</mat-option>
+                <mat-option [value]="taskFiltered.value">{{taskFiltered.label}}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
@@ -48,13 +48,16 @@
                     class="w-full p-1 sm:p-2 border rounded text-sm" />
                   <span *ngIf="!task.isEditing" class="text-sm sm:text-base">{{ task.task_name }}</span>
                 </td>
+
                 <td class="px-3 py-2 sm:px-6 sm:py-4 font-medium text-gray-900 whitespace-nowrap">
                   <select *ngIf="task.isEditing" [(ngModel)]="task.statut"
                     class="w-full p-1 sm:p-2 border rounded text-sm">
                     <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
                   </select>
-                  <span *ngIf="!task.isEditing" class="text-sm sm:text-base">{{ task?.statut }}</span>
+                  <span *ngIf="!task.isEditing" class="text-sm sm:text-base">{{
+                    adaptiveStatutLabel(task.statut)}}</span>
                 </td>
+
                 <td class="px-3 py-2 sm:px-6 sm:py-4 text-right">
                   @if(!task.isEditing) {
                   <button mat-icon-button matTooltip="Editer" (click)="editField(task)"

@@ -8,21 +8,21 @@ import {
   setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
-import { Task } from '@core/models';
 
+import { Task } from '@core/models';
 import { TaskGateway } from '@core/ports';
 import { TASK_DOC_NAME } from '@shared/constants/task';
 
 export class FirebaseTaskGateway extends TaskGateway {
   private readonly fbStore = inject(Firestore);
-  private firebaseCollection = collection(this.fbStore, TASK_DOC_NAME);
+  private tasksCollection = collection(this.fbStore, TASK_DOC_NAME);
 
   getTasks() {
-    return collectionData(this.firebaseCollection);
+    return collectionData(this.tasksCollection);
   }
 
   postTask(data: any) {
-    const newCollection = doc(this.firebaseCollection);
+    const newCollection = doc(this.tasksCollection);
     return setDoc(newCollection, { ...data, _id: newCollection.id });
   }
 

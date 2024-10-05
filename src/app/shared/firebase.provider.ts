@@ -20,7 +20,6 @@ export const provideFirebaseService = (): Array<
       provide: AuthGateway,
       useClass: FirebaseAuthGateway,
     },
-
     // Task gateway
     {
       provide: TaskGateway,

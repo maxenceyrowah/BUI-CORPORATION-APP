@@ -18,12 +18,12 @@ import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { FormFieldComponent } from '@shared/components/form-field-component';
 import { NgIf } from '@angular/common';
 import { AuthGateway } from '@core/ports';
 import { CONNECTED_USER_KEY } from '@shared/constants/auth';
 import { ToasterService } from '@shared/services/toaster.server';
 import { ErrorsService } from '@shared/services/errors.service';
+import { FormFieldComponent, PublicLayoutComponent } from '@shared/components';
 
 @Component({
   selector: 'app-register',
@@ -34,10 +34,11 @@ import { ErrorsService } from '@shared/services/errors.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    FormFieldComponent,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     NgIf,
+    PublicLayoutComponent,
+    FormFieldComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './register.component.html',

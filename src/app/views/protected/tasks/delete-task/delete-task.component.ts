@@ -25,12 +25,11 @@ import { ToasterService } from '@shared/services/toaster.server';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteTaskComponent {
-  private dialogRef = inject(MatDialogRef<DeleteTaskComponent>);
   private readonly _snackBar = inject(ToasterService);
   private readonly errorService = inject(ErrorsService);
-
   private readonly taskService = inject(TaskGateway);
   public entryData = inject(MAT_DIALOG_DATA);
+  private dialogRef = inject(MatDialogRef<DeleteTaskComponent>);
 
   isSubmitting = signal(false);
 

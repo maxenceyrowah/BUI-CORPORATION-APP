@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
+
 import { ToasterService } from './toaster.server';
 
 const errorMessages: { [k: string]: string } = {
@@ -18,15 +19,12 @@ export class ErrorsService {
   private defaultMsg =
     "Une erreur s'est produite. Veuillez réessayer plus tard.";
 
-  handleError(error: any): Observable<never> {
+  handleError(error: any) {
     this._snackBar.show(this.getErrorMessage(error?.code));
     return throwError(() => error);
   }
-  private getErrorMessage(error: string): string {
-    if (errorMessages[error]) {
-      return errorMessages[error];
-    } else {
-      return this.defaultMsg;
-    }
+  private getErrorMessage(error: string) {
+    if (!errorMessages[error]) return this.defaultMsg;
+    return errorMessages[error];
   }
 }

@@ -19,11 +19,11 @@ import {
 } from '@angular/forms';
 import { NgIf } from '@angular/common';
 
-import { FormFieldComponent } from '@shared/components/form-field-component';
 import { AuthGateway } from '@core/ports';
 import { ACCESS_TOKEN_KEY, CONNECTED_USER_KEY } from '@shared/constants/auth';
 import { ErrorsService } from '@shared/services/errors.service';
 import { ToasterService } from '@shared/services/toaster.server';
+import { FormFieldComponent, PublicLayoutComponent } from '@shared/components';
 
 @Component({
   selector: 'app-login',
@@ -34,10 +34,11 @@ import { ToasterService } from '@shared/services/toaster.server';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    FormFieldComponent,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     NgIf,
+    PublicLayoutComponent,
+    FormFieldComponent,
   ],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

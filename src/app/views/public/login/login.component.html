@@ -1,67 +1,59 @@
-<div class="md:py-[15rem] py-10">
-  <div class="flex h-full items-center justify-center">
-    <div
-      class="rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-900 flex-col flex h-full items-center justify-center sm:px-4">
-      <div class="flex h-full flex-col justify-center gap-4 p-6">
-        <div class="left-0 right-0 inline-block border-gray-200 px-2 py-2.5 sm:px-4">
-          <form class="flex flex-col gap-4 pb-4" [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
-            <h1 class="mb-4 text-3xl font-bold  dark:text-white text-center">Se connecter</h1>
+<app-public-layout>
+  <div ngProjectAs="[field-content]">
+    <form class="flex flex-col gap-4 pb-4" [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
+      <h1 class="mb-4 text-3xl font-bold  dark:text-white text-center">Se connecter</h1>
 
-            <app-form-field label="Adresse E-mail" fieldRequired>
-              <div ngProjectAs="[field-content]">
-                <mat-form-field appearance="outline" class="w-full">
-                  <input matInput placeholder="Placeholder" formControlName="email"
-                    placeholder="Entrer votre adresse e-mail">
-                  <mat-error>
-                    @if (loginForm.get('email')?.hasError('required')) {
-                    <span> Ce champ est requis
-                    </span>
-                    }
-                    @if (loginForm.get('email')?.hasError('email')) {
-                    <span> Veuillez entrer une adresse email valide</span>
-                    }
-                  </mat-error>
-                </mat-form-field>
-              </div>
-            </app-form-field>
-
-            <app-form-field label="Mot de passe" fieldRequired>
-              <div ngProjectAs="[field-content]">
-                <mat-form-field appearance="outline" class="w-full">
-                  <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password"
-                    placeholder="Entrer votre mot de passe" />
-                  <button type="button" mat-icon-button matSuffix (click)="clickEvent($event)"
-                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
-                    <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
-                  </button>
-                  <mat-error>
-                    @if (loginForm.get('password')?.hasError('required')) {
-                    <span>Ce champ est requis
-                    </span>
-                    }
-                  </mat-error>
-                </mat-form-field>
-              </div>
-            </app-form-field>
-
-            <div class="flex flex-col gap-2">
-              <button type="submit" class="w-full rounded-md" mat-flat-button [disabled]="isSubmitting()">
-                <span *ngIf="!isSubmitting()">
-                  Connexion
-                </span>
-                <mat-progress-spinner *ngIf="isSubmitting()" [diameter]="24"
-                  [mode]="'indeterminate'"></mat-progress-spinner>
-              </button>
-            </div>
-          </form>
-          <div class="min-w-[270px]">
-            <div class="mt-4 text-sm text-gray-500 text-center dark:text-gray-200">Nouvelle utilisateur ?
-              <a class="text-blue-500 hover:text-blue-600" routerLink="/public/register">S'enregistrer
-                ici</a>
-            </div>
-          </div>
+      <app-form-field label="Adresse E-mail" fieldRequired>
+        <div ngProjectAs="[field-content]">
+          <mat-form-field appearance="outline" class="w-full">
+            <input matInput placeholder="Placeholder" formControlName="email" placeholder="Entrer votre adresse e-mail">
+            <mat-error>
+              @if (loginForm.get('email')?.hasError('required')) {
+              <span> Ce champ est requis
+              </span>
+              }
+              @if (loginForm.get('email')?.hasError('email')) {
+              <span> Veuillez entrer une adresse email valide</span>
+              }
+            </mat-error>
+          </mat-form-field>
         </div>
+      </app-form-field>
+
+      <app-form-field label="Mot de passe" fieldRequired>
+        <div ngProjectAs="[field-content]">
+          <mat-form-field appearance="outline" class="w-full">
+            <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password"
+              placeholder="Entrer votre mot de passe" />
+            <button type="button" mat-icon-button matSuffix (click)="clickEvent($event)"
+              [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
+              <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error>
+              @if (loginForm.get('password')?.hasError('required')) {
+              <span>Ce champ est requis
+              </span>
+              }
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </app-form-field>
+
+      <div class="flex flex-col gap-2">
+        <button type="submit" class="w-full rounded-md" mat-flat-button [disabled]="isSubmitting()">
+          <span *ngIf="!isSubmitting()">
+            Connexion
+          </span>
+          <mat-progress-spinner *ngIf="isSubmitting()" [diameter]="24" [mode]="'indeterminate'"></mat-progress-spinner>
+        </button>
+      </div>
+    </form>
+
+    <div class="min-w-[270px]">
+      <div class="mt-4 text-sm text-gray-500 text-center dark:text-gray-200">Nouvel utilisateur ?
+        <a class="text-blue-500 hover:text-blue-600" routerLink="/public/register">S'enregistrer
+          ici</a>
       </div>
     </div>
   </div>
-</div>
+</app-public-layout>

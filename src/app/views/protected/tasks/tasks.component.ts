@@ -1,7 +1,12 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog } from '@angular/material/dialog';
@@ -19,7 +24,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormFieldComponent } from '@shared/components/form-field-component';
 import {
   combineLatest,
-  finalize,
   Observable,
   of,
   startWith,
@@ -27,11 +31,15 @@ import {
   takeUntil,
 } from 'rxjs';
 
-import { ACCESS_TOKEN_KEY, CONNECTED_USER_KEY } from '@shared/constants/auth';
-import { TaskGateway } from '@core/ports';
+import { AuthGateway, TaskGateway } from '@core/ports';
 import { Task } from '@core/models';
 import { DeleteTaskComponent } from './delete-task/delete-task.component';
-import { STATUS } from '@shared/constants/task';
+import {
+  STATUS,
+  TASK_STATUT,
+  TASKS_COLUMNS,
+  TASKS_OPTIONS,
+} from '@shared/constants/task';
 import { NewTaskComponent } from './new-task/new-task.component';
 import { DestroyService } from '@shared/services/destroy.service';
 import { ToasterService } from '@shared/services/toaster.server';
@@ -59,20 +67,21 @@ import { ErrorsService } from '@shared/services/errors.service';
   ],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TasksComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
-  private readonly router = inject(Router);
+  private readonly authGateway = inject(AuthGateway);
   private readonly taskService = inject(TaskGateway);
   private readonly destroy$ = inject(DestroyService);
   private readonly _snackBar = inject(ToasterService);
   private readonly errorService = inject(ErrorsService);
 
-  displayedColumns: string[] = ['task_name', 'statut', 'actions'];
-  filteredTasks = ['Tous', 'completed', 'uncompleted'];
   isSubmitting = signal(false);
-  isLoading = signal(false);
-  taskStatutSelected = new FormControl('Tous');
+
+  taskStatutSelected = new FormControl(TASK_STATUT.TOUS);
+  displayedColumns = TASKS_COLUMNS;
+  filteredTasks = TASKS_OPTIONS;
   options = STATUS;
   filteredTasks$: Observable<Task[]>;
   allTasks: Task[] = [];
@@ -84,13 +93,13 @@ export class TasksComponent implements OnInit {
   setupTaskFiltering() {
     const tasks$ = this.getTasks();
     const statusFilter$ = this.taskStatutSelected.valueChanges.pipe(
-      startWith('Tous')
+      startWith(TASK_STATUT.TOUS)
     );
 
     this.filteredTasks$ = combineLatest([tasks$, statusFilter$]).pipe(
       takeUntil(this.destroy$),
       switchMap(([tasks, status]) => {
-        if (status === 'Tous') {
+        if (status === TASK_STATUT.TOUS) {
           return of(tasks);
         } else {
           return of(tasks.filter((task) => task.statut === status));
@@ -99,10 +108,8 @@ export class TasksComponent implements OnInit {
     );
   }
   getTasks() {
-    this.isLoading.set(true);
     return this.taskService.getTasks().pipe(
       takeUntil(this.destroy$),
-      finalize(() => this.isLoading.set(false)),
       switchMap((tasks) => {
         this.allTasks = tasks;
         return of(tasks);
@@ -133,7 +140,7 @@ export class TasksComponent implements OnInit {
   }
   cancelEditField(row: any) {
     row.isEditing = false;
-    this.getTasks();
+    this.setupTaskFiltering();
   }
   deleteTask(row: any) {
     this.dialog
@@ -147,10 +154,8 @@ export class TasksComponent implements OnInit {
         row.isEditing = false;
       });
   }
-  logout() {
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-    localStorage.removeItem(CONNECTED_USER_KEY);
-    return this.router.navigate(['/public/login']);
+  async logout() {
+    await this.authGateway.logout;
   }
   displayHeader(row: any) {
     if (row === 'task_name') return 'Libelle de la tâche';
@@ -159,9 +164,13 @@ export class TasksComponent implements OnInit {
 
   get uncompletedTasksNumber() {
     const umcompleteTasks = this.allTasks.filter(
-      (task) => task.statut !== 'completed'
+      (task) => task.statut !== TASK_STATUT.TERMINE
     ).length;
 
     return `${umcompleteTasks} tâches`;
+  }
+
+  adaptiveStatutLabel(statut: string) {
+    return statut === TASK_STATUT.NON_TERMINE ? 'Non terminé' : 'Terminé';
   }
 }
