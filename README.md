@@ -11,6 +11,7 @@
   - [Structure du Projet](#structure-du-projet)
     - [Technologies](#technologies)
   - [Fonctionnalités](#fonctionnalités)
+    - [Links](#links)
   - [Licence](#licence)
 
 ## Installation
@@ -77,7 +78,7 @@ Pour installer et configurer le projet TODO-APP-UI, suivez ces étapes :
 - Semantic HTML5 markup
 - Flexbox
 - Mobile-first workflow
-- - TailwindCSS
+- TailwindCSS
 - [Angular](https://angular.dev/)
 - [Firebase](https://firebase.google.com/)
 
@@ -90,6 +91,10 @@ Pour installer et configurer le projet TODO-APP-UI, suivez ces étapes :
   - Filtrer les tâches
   - Marquer une tâche comme terminée
   - Compteur de tâches
+
+### Links
+
+- Live Site URL: [TOO-APP-UI](https://ng-todo-app-ui-99907.web.app/public/login)
 
 ## Licence
 
