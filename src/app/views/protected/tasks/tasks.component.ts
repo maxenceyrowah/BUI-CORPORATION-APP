@@ -44,6 +44,9 @@ import { NewTaskComponent } from './new-task/new-task.component';
 import { DestroyService } from '@shared/services/destroy.service';
 import { ToasterService } from '@shared/services/toaster.server';
 import { ErrorsService } from '@shared/services/errors.service';
+import { TaskTableComponent } from './components/task-table.component';
+import { TaskFilteredComponent } from './components/task-filtered.component';
+import { TaskHeaderComponent } from './components/task-header.component';
 
 @Component({
   selector: 'app-tasks',
@@ -64,6 +67,9 @@ import { ErrorsService } from '@shared/services/errors.service';
     MatSelectModule,
     ReactiveFormsModule,
     FormFieldComponent,
+    TaskTableComponent,
+    TaskFilteredComponent,
+    TaskHeaderComponent,
   ],
   templateUrl: './tasks.component.html',
   styleUrl: './tasks.component.scss',
@@ -157,7 +163,7 @@ export class TasksComponent implements OnInit {
   async logout() {
     await this.authGateway.logout;
   }
-  displayHeader(row: any) {
+  displayTableHeader(row: any) {
     if (row === 'task_name') return 'Libelle de la tâche';
     return row;
   }
