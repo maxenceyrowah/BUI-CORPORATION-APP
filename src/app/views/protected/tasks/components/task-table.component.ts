@@ -17,11 +17,12 @@ import { Observable } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
 
 import { Task } from '@core/models';
-import { STATUS } from '@shared/constants/task';
+import { TASK_STATUS_OPTIONS } from '@shared/constants/task';
 import { TaskNumberComponent } from './task-number.component';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-task-table',
@@ -38,6 +39,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatProgressSpinnerModule,
     TaskNumberComponent,
     MatButtonModule,
+    MatTooltip,
   ],
   template: `
     <div class="overflow-hidden">
@@ -171,7 +173,7 @@ export class TaskTableComponent {
   @Input() displayColumnsName: any;
   @Input() filteredTasks: Observable<Task[]>;
   @Input() allTasks: Task[] = [];
-  @Input() taskStatutOptions: typeof STATUS;
+  @Input() taskStatutOptions: typeof TASK_STATUS_OPTIONS;
   @Input() statutLabel: any;
   @Input() isSubmitting: Signal<boolean>;
 

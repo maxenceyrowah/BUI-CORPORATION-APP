@@ -19,7 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { TaskGateway } from '@core/ports';
 import { FormFieldComponent } from '@shared/components/form-field-component';
-import { STATUS, TASK_STATUT } from '@shared/constants/task';
+import { TASK_STATUS_OPTIONS, TASK_STATUT } from '@shared/constants/task';
 import { ErrorsService } from '@shared/services/errors.service';
 import { ToasterService } from '@shared/services/toaster.server';
 
@@ -48,7 +48,7 @@ export class NewTaskComponent {
   private dialogRef = inject(MatDialogRef<NewTaskComponent>);
   public entryData = inject(MAT_DIALOG_DATA);
 
-  status = STATUS;
+  status = TASK_STATUS_OPTIONS;
   isSubmitting = signal(false);
   task_name = new FormControl('');
   statut = new FormControl(TASK_STATUT.NON_TERMINE);

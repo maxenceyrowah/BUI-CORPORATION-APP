@@ -35,10 +35,10 @@ import { AuthGateway, TaskGateway } from '@core/ports';
 import { Task } from '@core/models';
 import { DeleteTaskComponent } from './delete-task/delete-task.component';
 import {
-  STATUS,
+  TASK_STATUS_OPTIONS,
   TASK_STATUT,
   TASKS_COLUMNS,
-  TASKS_OPTIONS,
+  TASKS_FILTER_OPTIONS,
 } from '@shared/constants/task';
 import { NewTaskComponent } from './new-task/new-task.component';
 import { DestroyService } from '@shared/services/destroy.service';
@@ -87,8 +87,8 @@ export class TasksComponent implements OnInit {
 
   taskStatutSelected = new FormControl(TASK_STATUT.TOUS);
   displayedColumns = TASKS_COLUMNS;
-  filteredTasks = TASKS_OPTIONS;
-  options = STATUS;
+  filteredTasks = TASKS_FILTER_OPTIONS;
+  options = TASK_STATUS_OPTIONS;
   filteredTasks$: Observable<Task[]>;
   allTasks: Task[] = [];
 

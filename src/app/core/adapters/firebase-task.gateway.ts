@@ -11,11 +11,11 @@ import {
 
 import { Task } from '@core/models';
 import { TaskGateway } from '@core/ports';
-import { TASK_DOC_NAME } from '@shared/constants/task';
+import { TASK_COLLECTION_NAME } from '@shared/constants/task';
 
 export class FirebaseTaskGateway extends TaskGateway {
   private readonly fbStore = inject(Firestore);
-  private tasksCollection = collection(this.fbStore, TASK_DOC_NAME);
+  private tasksCollection = collection(this.fbStore, TASK_COLLECTION_NAME);
 
   getTasks() {
     return collectionData(this.tasksCollection);
@@ -26,13 +26,19 @@ export class FirebaseTaskGateway extends TaskGateway {
     return setDoc(newCollection, { ...data, _id: newCollection.id });
   }
 
-  putTask(data: Partial<Task>, documentId: string) {
-    const newCollection = doc(this.fbStore, `/${TASK_DOC_NAME}/${documentId}`);
+  putTask(data: Partial<Task>, taskID: string) {
+    const newCollection = doc(
+      this.fbStore,
+      `/${TASK_COLLECTION_NAME}/${taskID}`
+    );
     return updateDoc(newCollection, data as any);
   }
 
-  deleteTask(documentId: string) {
-    const newCollection = doc(this.fbStore, `/${TASK_DOC_NAME}/${documentId}`);
+  deleteTask(taskID: string) {
+    const newCollection = doc(
+      this.fbStore,
+      `/${TASK_COLLECTION_NAME}/${taskID}`
+    );
     return deleteDoc(newCollection);
   }
 }
