@@ -81,6 +81,7 @@ Pour installer et configurer le projet TODO-APP-UI, suivez ces étapes :
 - TailwindCSS
 - [Angular](https://angular.dev/)
 - [Firebase](https://firebase.google.com/)
+- [Jest](https://www.npmjs.com/package/jest-preset-angular/)
 
 ## Fonctionnalités
 
