@@ -13,24 +13,5 @@ export const appConfig: ApplicationConfig = {
 
     //firebase provider
     provideFirebaseService(),
-
-    // {
-    //   provide: TaskGateway,
-    //   useValue: new InMemoryTaskGateway().withTasks([
-    //     {
-    //       _id: '1',
-    //       task_name: 'TASK 001',
-    //       isEditing: false,
-    //       statut: 'uncompleted',
-    //     },
-    //     {
-    //       _id: '2',
-    //       task_name: 'TASK 002',
-    //       isEditing: false,
-    //       statut: 'uncompleted',
-    //     },
-    //   ]),
-    // },
-    // { provide: AuthGateway, useValue: new InMemoryAuthGateway() },
   ],
 };
